@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type=text/css>
+    body { background-color: #202020; }
+    div.app, video
+    {
+        height: 100%;
+        width: 100%;
+        text-align: -webkit-center;
+    }
+    .reduced
+    {
+        height: 80%;
+        width: 80%;
+    }
+    .center_holder { margin: auto; }
+    h1
+    {
+        display: table-cell;
+        vertical-align: middle;
+        color: #FFFFFF;
+    }
+    .button_holder { display: table; }
+    button.active { color: red !important; }
+    button
+    {
+        width: 200px;
+        border-radius: 4px;
+        border: solid 2px #004d74 !important;
+        line-height: 45px;
+        background-color: #004d74 !important;
+        color: #fff !important;
+        font-size: 30px;
+        font-weight: bold;
+        margin: 5px
+    }
+  </style>
+  <script src=http://player.h-cdn.com/loader_demo.js></script>
+  <script src=https://cdn.rawgit.com/hola/dash.js/development/dist/dash.all.debug.js>
+  </script>
+  <script src=https://player.h-cdn.com/svc/cdn/pub/hls.js></script>
+</head>
+<body>
+  <div class=app>
+    <h1>HolaCDN demo application</h1>
+    <div id=container class="reduced center_holder"></div>
+    <div class="button_holder center_holder">
+      <button id=dash onclick="init_dash_video()">DASH</button>
+      <button id=hls onclick="init_hls_video()">HLS</button>
+    </div>
+  </div>
+  <script>
+    var player;
+    function is_active(id){
+    	return document.getElementById(id).classList.contains('active'); }
+    function switch_to(button){
+    	var buttons = document.getElementsByTagName('button');
+    	for (var i=0; i<buttons.length; i++)
+    	{
+    		var btn = buttons[i];
+    		if (btn.id==button)
+    			btn.classList.add('active');
+    		else
+    			btn.classList.remove('active');
+    	}
+    }
+    function add_empty_video(){
+    	var oldvideo = document.getElementsByTagName('video')[0];
+    	if (oldvideo)
+        {
+    		if (player.reset)
+    			player.reset();
+    		if (player.detachMedia)
+    			player.detachMedia(oldvideo);
+    		oldvideo.src = '';
+    		oldvideo.remove();
+    	}
+    	var video = document.createElement('video');
+    	video.controls = true;
+    	document.getElementById('container').appendChild(video);
+    	return video;
+    }
+    function init_dash_video(){
+    	if (is_active('dash'))
+    		return;
+    	switch_to('dash');
+    	var video = add_empty_video();
+    	window.hola_dbg_conf = {};
+        player = dashjs.MediaPlayer().create();
+        player.initialize(video,
+            'http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/'
+            +'client_manifest-events.mpd', false);
+        video.play();
+    }
+    function init_hls_video(){
+    	if (is_active('hls'))
+    		return;
+    	switch_to('hls');
+    	var video = add_empty_video();
+        player = new Hls();
+        player.attachMedia(video);
+      	player.loadSource('http://player.h-cdn.org/static/hls/'
+        	+'long_demo/cdn_demo_long.m3u8');
+        video.play();
+    }
+  </script>
+</body>
+</html>

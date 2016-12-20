@@ -1,0 +1,10 @@
+{
+    "vendor": "Hola Networks Ltd.",
+    "largeIcon": "largeIcon.png",
+    "icon": "icon.png",
+    "main": "index.html",
+    "id": "org.hola.cdndemo",
+    "title": "HolaCDN Demo for LG SmartTV",
+    "type": "web",
+    "version": "1.25.530"
+}
