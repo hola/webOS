@@ -39,7 +39,7 @@
   <script async crossorigin=anonymous
     src=http://player.h-cdn.com/loader.js?customer=demo></script>
   <script
-    src=https://cdn.rawgit.com/hola/dash.js/development/dist/dash.all.debug.js>
+    src=https://cdn.rawgit.com/hola/shaka-player/v1.6.5-hola-4/shaka-player.compiled.js>
   </script>
   <script src=https://player.h-cdn.com/svc/cdn/pub/hls.js></script>
 </head>
@@ -88,12 +88,18 @@
     		return;
     	switch_to('dash');
     	var video = add_empty_video();
-    	window.hola_dbg_conf = {};
-        player = dashjs.MediaPlayer().create();
-        player.initialize(video,
+        shaka.polyfill.installAll();
+        var player = new shaka.player.Player(video);
+        player.addEventListener('error', function(e){
+            console.error('Error code', event.detail.code, 'object', event.detail);
+        });
+        var estimator = new shaka.util.EWMABandwidthEstimator();
+        var source = new shaka.player.DashVideoSource(
             'http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/'
-            +'client_manifest-events.mpd', false);
-        video.play();
+            +'client_manifest-events.mpd', null, estimator);
+        player.load(source).then(function(){
+            video.play();
+        });
     }
     function init_hls_video(){
     	if (is_active('hls'))
