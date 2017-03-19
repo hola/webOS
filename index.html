@@ -39,7 +39,7 @@
   <script async crossorigin=anonymous
     src=http://player.h-cdn.com/loader.js?customer=demo></script>
   <script
-    src=https://cdn.rawgit.com/hola/shaka-player/v1.6.5-hola-4/shaka-player.compiled.js>
+    src=http://cdn.rawgit.com/hola/shaka-player/v2.0.6-hola-2/release/shaka-player.compiled.js>
   </script>
   <script src=https://player.h-cdn.com/svc/cdn/pub/hls.js></script>
 </head>
@@ -88,16 +88,10 @@
     		return;
     	switch_to('dash');
     	var video = add_empty_video();
-        shaka.polyfill.installAll();
-        var player = new shaka.player.Player(video);
-        player.addEventListener('error', function(e){
-            console.error('Error code', event.detail.code, 'object', event.detail);
-        });
-        var estimator = new shaka.util.EWMABandwidthEstimator();
-        var source = new shaka.player.DashVideoSource(
-            'http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/'
-            +'client_manifest-events.mpd', null, estimator);
-        player.load(source).then(function(){
+        var player = new shaka.Player(video);
+        player.load('https://storage.googleapis.com/shaka-demo-assets/'
+            +'sintel-mp4-only/dash.mpd')
+        .then(function(){
             video.play();
         });
     }
